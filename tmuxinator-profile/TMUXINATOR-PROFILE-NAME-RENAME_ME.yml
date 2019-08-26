@@ -1,0 +1,5 @@
+name: node-geomatic-workflows
+root: /Users/git/node-geomatic-workflows
+
+windows:
+        - docker-dev: cd docker/dev ; sleep 0.5 ; clear
