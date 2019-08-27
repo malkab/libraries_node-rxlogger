@@ -1,2 +1,2 @@
-This is the package.json README to be shown at NPM and at node_modules
-when installing the package.
+RxLogger is a logging facility that mainly relies on listening to RxJS
+Subjects. It has a default service to log to console.

@@ -1,7 +1,7 @@
 {
-  "name": "@malkab/test-npm-library",
-  "version": "0.0.4",
-  "description": "test-npm-library",
+  "name": "@malkab/rxlogger",
+  "version": "0.0.2",
+  "description": "An logger for RxJS-based API project that relies on listening to Subjects.",
   "scope": "@malkab",
   "author": {
     "name": "Juan Pedro Perez Alcantara",
@@ -11,9 +11,9 @@
   "main": "dist/main.js",
   "types": "dist/lib/index.d.ts",
   "keywords": [
-    "a",
-    "b",
-    "c"
+    "rxjs",
+    "logger",
+    "subjects"
   ],
   "license": "UNLICENSED",
   "homepage": "https://github.com/owner/project#readme",
@@ -60,6 +60,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "@malkab/ts-utils": "0.0.0",
     "rxjs": "^6.5.2"
   }
 }

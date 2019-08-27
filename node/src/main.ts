@@ -1,4 +1,4 @@
-import { RxLogger } from "./lib/rxlogger";
+import { RxLogger, ERXLOGGERLEVELS } from "./lib/rxlogger";
 
 import { RxLoggerConsoleService } from "./lib/rxlogger-console-service";
 
@@ -30,19 +30,25 @@ setInterval(() => {
 
     s01.next("c01");
 
-}, 3000);
+}, 1000);
 
 
 
-RxLogger.registerService(new RxLoggerConsoleService());
+RxLogger.registerService("console00", new RxLoggerConsoleService());
 
-RxLogger.registerService(new RxLoggerConsoleService());
+RxLogger.registerService("console01", new RxLoggerConsoleService());
+
+RxLogger.registerChain(ERXLOGGERLEVELS.DEBUG, [ "console00", "console01" ]);
+
+RxLogger.registerChain(ERXLOGGERLEVELS.DEBUG, [ "console01" ], "c01");
 
 
-RxLogger.listen(s00);
+RxLogger.log("The message", ERXLOGGERLEVELS.INFO);
 
-RxLogger.listen(s00, "Only string: ");
+RxLogger.listen(s00, ERXLOGGERLEVELS.DEBUG);
 
-RxLogger.listen(s00, (i) => `Function: ${i.i0}, ${i.i1}`);
+RxLogger.listen(s00, ERXLOGGERLEVELS.INFO, "Only string: ");
 
-RxLogger.listen(s01);
+RxLogger.listen(s00, ERXLOGGERLEVELS.WARNING, (i) => `Function: ${i.i0}, ${i.i1}`);
+
+RxLogger.listen(s01, ERXLOGGERLEVELS.ERROR);

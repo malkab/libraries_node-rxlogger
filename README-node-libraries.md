@@ -1,10 +1,4 @@
-This repo contains geomatics and data workflows on GeoJSON, to be used
-at back and frontend, specially in conjunction with the angular-mapbox
-library for frontend data visualization.
-
-
-
-## Building the Library
+# Building the Library
 
 Follow these steps:
 

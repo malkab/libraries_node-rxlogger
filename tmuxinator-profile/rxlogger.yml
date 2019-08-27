@@ -1,0 +1,5 @@
+name: rxlogger
+root: /Users/git/cell-platform/rxlogger
+
+windows:
+        - docker-dev: cd docker/dev ; sleep 0.5 ; clear

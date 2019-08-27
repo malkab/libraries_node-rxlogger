@@ -2,9 +2,6 @@
 
 # This script builds the library
 
-LIBRARY_GROUP=malkab
-LIBRARY_NAME=angular-mapbox
-LIBRARY_TARGET_NAME=@$LIBRARY_GROUP/$LIBRARY_NAME
 DIST_LIBRARY_PATH=dist
 
 

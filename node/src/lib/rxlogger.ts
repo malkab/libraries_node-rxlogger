@@ -1,6 +1,6 @@
 import * as rx from "rxjs";
 
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { debugTime } from "@malkab/ts-utils";
 
 
 
@@ -15,6 +15,40 @@ import { connectableObservableDescriptor } from 'rxjs/internal/observable/Connec
 export interface IRxLoggerService {
 
     log: (payload: string) => void;
+
+}
+
+
+
+/**
+ * 
+ * Chains definition. Each chain has a default logging level and a 
+ * set of services.
+ * 
+ */
+
+export interface IRxLoggerChain {
+
+    logLevel: ERXLOGGERLEVELS;
+
+    services: string[];
+
+}
+
+
+
+/**
+ * 
+ * Logging levels
+ * 
+ */
+
+export enum ERXLOGGERLEVELS {
+
+    DEBUG,
+    INFO,
+    WARNING,
+    ERROR
 
 }
 
@@ -53,18 +87,39 @@ export class RxLogger {
 
     */
 
-    public static registerService(service: IRxLoggerService) {
+    public static registerService(name: string, service: IRxLoggerService): void {
 
-        this._services.push(service);
+        this._services.set(name, service);
+
+    }
+
+
+
+    public static registerChain(
+        logLevel: ERXLOGGERLEVELS,
+        services: string[],
+        name?: string
+    ): void {
+
+        name = name ? name : "default";
+
+        this._chains.set(name, {
+            logLevel: logLevel,
+            services: services
+        });
 
     }
 
 
 
     public static listen(
-        subject: rx.Subject<any>, 
-        process?: string | ((i: any) => string)
+        subject: rx.Subject<any>,
+        level: ERXLOGGERLEVELS,
+        process?: string | ((i: any) => string),
+        chain?: string
     ) {
+
+        chain = chain ? chain : "default";
 
         let preFunc: (i: any) => string = null;
 
@@ -83,12 +138,8 @@ export class RxLogger {
             subject.subscribe(
 
                 (next) => {
-                    
-                    for (const i of this._services) {
-                    
-                        i.log(`${this._t()}: ${preFunc(next)}`);
 
-                    }
+                    this.log(preFunc(next), level, chain);
 
                 }
 
@@ -96,6 +147,37 @@ export class RxLogger {
 
         );
             
+    }
+
+
+
+
+    /**
+     * 
+     * Logs an entry
+     * 
+     */
+
+    public static log(
+        message: string,
+        level: ERXLOGGERLEVELS,
+        chain?: string
+    ) {
+              
+        chain = chain ? chain : "default";
+
+        const c: IRxLoggerChain = this._chains.get(chain);
+
+        for (const i of c.services) {
+        
+            if (level >= c.logLevel) {
+
+                this._services.get(i).log(`${debugTime()}: ${this._loggerLevelsDescription[level]}: ${message}`);
+                
+            }
+
+        }
+
     }
 
 
@@ -110,29 +192,17 @@ export class RxLogger {
 
     private static _subscriptions: rx.Subscription[] = [];
 
-    private static _services: IRxLoggerService[] = [];
+    private static _services: Map<string, IRxLoggerService> = 
+        new Map<string, IRxLoggerService>();
 
+    private static _chains: Map<string, IRxLoggerChain> = 
+        new Map<string, IRxLoggerChain>();
 
-
-    // Function time
-
-    private static _t(delta: number = null): string {
-
-        const d = new Date();
-        const time = Date.now();
-
-        let out: string = `${new Date().toISOString()}`;
-
-        if (delta) {
-
-            delta = (Date.now() - delta) / 1000.0;
-
-            out = out + ` (+${delta} s)`;
-
-        }
-
-        return out;
-
-    }
+    private static _loggerLevelsDescription: string[] = [ 
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR"
+    ];
 
 }
